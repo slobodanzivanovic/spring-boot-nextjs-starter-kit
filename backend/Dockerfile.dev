@@ -1,0 +1,33 @@
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
+
+WORKDIR /app
+
+COPY pom.xml .
+
+RUN mkdir -p core modules
+COPY core/pom.xml core/
+# When we add a modules pom.xml, uncomment this
+# COPY modules/pom.xml modules/
+
+RUN mvn dependency:go-offline
+
+COPY core/src core/src
+# For future modules, we would add:
+# COPY modules/module1/src modules/module1/src
+# etc.
+
+RUN mvn package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/core/target/*.jar app.jar
+
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 8080
+EXPOSE 5005
+
+ENTRYPOINT ["docker-entrypoint.sh"]
