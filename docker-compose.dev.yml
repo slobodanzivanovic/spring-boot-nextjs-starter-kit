@@ -20,9 +20,8 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=slobodan.zivanovic@programiraj.rs
-      - PGADMIN_DEFAULT_PASSWORD=slobodan
+    env_file:
+      - ./db/.env.dev
     ports:
       - "5050:80"
     volumes:
