@@ -1,5 +1,6 @@
 package com.slobodanzivanovic.example.core;
 
+import com.slobodanzivanovic.example.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ public class CoreApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CoreApplication.class, args);
 		LOGGER.info("{} started", CLASSNAME);
+		Test.test();
 	}
 
 }

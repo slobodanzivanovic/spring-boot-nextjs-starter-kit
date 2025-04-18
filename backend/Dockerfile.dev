@@ -4,17 +4,23 @@ WORKDIR /app
 
 COPY pom.xml .
 
-RUN mkdir -p core modules
+RUN mkdir -p core modules/common
+
 COPY core/pom.xml core/
-# When we add a modules pom.xml, uncomment this
-# COPY modules/pom.xml modules/
+COPY modules/pom.xml modules/
+COPY modules/common/pom.xml modules/common/
+
+# For future modules, when we add them:
+# Uncomment and adjust as needed:
+# RUN mkdir -p modules/user-management
+# COPY modules/user-management/pom.xml modules/user-management/
 
 RUN mvn dependency:go-offline
 
 COPY core/src core/src
-# For future modules, we would add:
-# COPY modules/module1/src modules/module1/src
-# etc.
+COPY modules/common/src modules/common/src
+# And for future modules:
+# COPY modules/user-management/src modules/user-management/src
 
 RUN mvn package -DskipTests
 

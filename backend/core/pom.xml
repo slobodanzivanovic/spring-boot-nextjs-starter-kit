@@ -94,12 +94,12 @@
 		</dependency>
 
 		<!-- Module Dependencies -->
-		<!--
 		<dependency>
 			<groupId>com.slobodanzivanovic.example</groupId>
-			<artifactId>user-management</artifactId>
+			<artifactId>common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>com.slobodanzivanovic.example</groupId>
 			<artifactId>course-management</artifactId>
