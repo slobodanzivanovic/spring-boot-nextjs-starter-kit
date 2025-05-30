@@ -1,0 +1,27 @@
+name: starter-kit
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: starter-postgres
+    env_file:
+      - ./db/.env.dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - localnet
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U starter_user -d starter_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+
+networks:
+  localnet:
+    driver: bridge
