@@ -1,19 +1,16 @@
 package com.slobodanzivanovic.backend.model.common.dto;
 
-import java.time.LocalDateTime;
-
-import org.springframework.http.HttpStatus;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+import java.time.LocalDateTime;
 
 /**
  * Represents a generic response object
- * 
+ *
  * @param <T> Type of the response payload
- * 
  * @author Slobodan Zivanovic - June 1, 2025
  */
 @Getter
@@ -29,28 +26,28 @@ public class CustomResponse<T> {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T response;
-	
+
 	/**
 	 * Default succ response with HTTP OK status and succ indicator set to true
 	 */
 	public static final CustomResponse<Void> SUCCESS = CustomResponse.<Void>builder()
-			.httpStatus(HttpStatus.OK)
-			.isSuccess(true)
-			.build();
+		.httpStatus(HttpStatus.OK)
+		.isSuccess(true)
+		.build();
 
 	/**
 	 * Creates a succ response with the provided payload and HTTP OK status
-	 * 
-	 * @param <T>		Type of the response payload
-	 * @param response	Response payload
-	 * @return			CustomResponse instance with success status, HTTP OK, and the provided payload
+	 *
+	 * @param <T>      Type of the response payload
+	 * @param response Response payload
+	 * @return CustomResponse instance with success status, HTTP OK, and the provided payload
 	 */
 	public static <T> CustomResponse<T> successOf(final T response) {
 		return CustomResponse.<T>builder()
-				.httpStatus(HttpStatus.OK)
-				.isSuccess(true)
-				.response(response)
-				.build();
+			.httpStatus(HttpStatus.OK)
+			.isSuccess(true)
+			.response(response)
+			.build();
 	}
-	
+
 }

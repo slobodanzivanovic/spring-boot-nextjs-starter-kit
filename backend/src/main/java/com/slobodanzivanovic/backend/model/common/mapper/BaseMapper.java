@@ -10,7 +10,7 @@ public interface BaseMapper<S, T> {
 
 	/**
 	 * Maps a signle object to a target object.
-	 * 
+	 *
 	 * @param source the source object to map
 	 * @return the mapped target object
 	 */
@@ -18,7 +18,7 @@ public interface BaseMapper<S, T> {
 
 	/**
 	 * Maps a collection of source objects to a list of target objects.
-	 * 
+	 *
 	 * @param sources the collection of source objects to map
 	 * @return the list of mapped target objects
 	 */
