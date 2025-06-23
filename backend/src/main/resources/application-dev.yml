@@ -16,11 +16,6 @@ spring:
     port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
-    
-  security:
-    user:
-      name: starter
-      password: passw0rd1
 
 logging:
   level:
