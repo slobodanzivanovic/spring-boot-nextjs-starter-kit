@@ -1,7 +1,6 @@
 package com.slobodanzivanovic.backend.service.auth;
 
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
-import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
 
 /**
  * Service interface for auth operations
@@ -10,6 +9,11 @@ import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
  */
 public interface AuthenticationService {
 
-	UserEntity register(RegisterRequest registerRequest);
+	/**
+	 * Register a new user in system
+	 *
+	 * @param registerRequest The registration req
+	 */
+	void register(RegisterRequest registerRequest);
 
 }

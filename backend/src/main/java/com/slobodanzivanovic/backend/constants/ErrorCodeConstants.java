@@ -17,5 +17,7 @@ public class ErrorCodeConstants {
 	public static final String ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
 	public static final String INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
 	public static final String TYPE_MISMATCH = "TYPE_MISMATCH";
+	public static final String RESOURCE_ALREADY_EXISTS = "RESOURCE_ALREADY_EXISTS";
+	public static final String EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR";
 
 }
