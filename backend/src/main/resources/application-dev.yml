@@ -11,6 +11,12 @@ spring:
       hibernate:
         format_sql: false
 
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+
 logging:
   level:
     root: INFO
