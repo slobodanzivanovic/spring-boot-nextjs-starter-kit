@@ -21,6 +21,26 @@ services:
       retries: 5
       start_period: 30s
 
+  backend:
+    container_name: starter-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    env_file:
+      - ./backend/.env.dev
+    volumes:
+      - ./backend:/app
+      - ~/.gradle:/root/.gradle
+    command: "./gradlew bootRun --args='--spring.profiles.active=dev' -Dorg.gradle.jvmargs='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - localnet
+
 volumes:
   postgres_data:
 
