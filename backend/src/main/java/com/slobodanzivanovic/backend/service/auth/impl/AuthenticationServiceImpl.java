@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.slobodanzivanovic.backend.exception.BusinessException;
 import com.slobodanzivanovic.backend.exception.ExternalServiceException;
 import com.slobodanzivanovic.backend.exception.ResourceAlreadyExistsException;
 import com.slobodanzivanovic.backend.exception.ResourceNotFoundException;
+import com.slobodanzivanovic.backend.exception.ValidationException;
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
 import com.slobodanzivanovic.backend.model.auth.entity.RoleEntity;
 import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
@@ -64,11 +66,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		}
 
 		if (userRepository.findByUsername(registerRequest.username()).isPresent()) {
-			throw new ResourceAlreadyExistsException("User already exists with this username");
+			throw new ResourceAlreadyExistsException(messageService.getMessage("error.user.exists"));
 		}
 
 		if (userRepository.findByEmail(registerRequest.email()).isPresent()) {
-			throw new ResourceAlreadyExistsException("User already exists with this email");
+			throw new ResourceAlreadyExistsException(messageService.getMessage("error.user.exists"));
 		}
 
 		//TODO: validate here (myb some validation service)
@@ -97,6 +99,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void verifyUser(String email, String verificationCode) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.verifyUser({})", CLASS_NAME, email);
+		}
+
+		UserEntity user = getUserByEmailOrThrow(email);
+
+		if (user.isEnabled()) {
+			throw new BusinessException(messageService.getMessage("error.user.already_verified"));
+		}
+
+		if (user.isVerificationCodeExpired()) {
+			throw new BusinessException(messageService.getMessage("error.user.verification_expired"));
+		}
+
+		if (!user.getVerificationCode().equals(verificationCode)) {
+			throw new ValidationException(messageService.getMessage("error.user.verification_code"));
+		}
+
+		user.setEnabled(true);
+		user.setVerificationCode(null);
+		user.setVerificationCodeExpiresAt(null);
+		userRepository.save(user);
+
+		LOGGER.info("User account verified: {}", email);
 	}
 
 	/**
@@ -135,6 +165,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			LOGGER.error("Failed to send verification email: {}", e.getMessage(), e);
 			throw new ExternalServiceException(messageService.getMessage("email.verification.failed"), e);
 		}
+	}
+
+	private UserEntity getUserByEmailOrThrow(String email) {
+		return userRepository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException(messageService.getMessage("error.user.not.found")));
 	}
 
 }

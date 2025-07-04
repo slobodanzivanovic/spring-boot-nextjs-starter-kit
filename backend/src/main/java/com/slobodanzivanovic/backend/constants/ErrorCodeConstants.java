@@ -19,5 +19,6 @@ public class ErrorCodeConstants {
 	public static final String TYPE_MISMATCH = "TYPE_MISMATCH";
 	public static final String RESOURCE_ALREADY_EXISTS = "RESOURCE_ALREADY_EXISTS";
 	public static final String EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR";
+	public static final String BUSINESS_RULE_VIOLATION = "BUSINESS_RULE_VIOLATION";
 
 }

@@ -14,4 +14,12 @@ public interface AuthenticationService {
 	 */
 	void register(RegisterRequest registerRequest);
 
+	/**
+	 * Verifies a user account using the verification code
+	 *
+	 * @param email            The email of the account to verify
+	 * @param verificationCode The verification code sent to the users email
+	 */
+	void verifyUser(String email, String verificationCode);
+
 }

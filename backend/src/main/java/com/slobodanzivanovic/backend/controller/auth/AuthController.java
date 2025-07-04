@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
+import com.slobodanzivanovic.backend.model.auth.dto.request.VerifyRequest;
 import com.slobodanzivanovic.backend.model.common.dto.CustomResponse;
 import com.slobodanzivanovic.backend.service.auth.AuthenticationService;
 
@@ -43,6 +44,12 @@ public class AuthController {
 				.httpStatus(HttpStatus.CREATED)
 				.isSuccess(true)
 				.build();
+	}
+
+	@PostMapping("/verify")
+	public CustomResponse<Void> verifyAccount(@Valid @RequestBody VerifyRequest verifyRequest) {
+		this.authenticationService.verifyUser(verifyRequest.email(), verifyRequest.verificationCode());
+		return CustomResponse.SUCCESS;
 	}
 
 }
