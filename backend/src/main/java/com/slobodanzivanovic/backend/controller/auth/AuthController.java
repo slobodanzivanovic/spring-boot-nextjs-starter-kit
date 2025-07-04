@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
@@ -46,9 +47,27 @@ public class AuthController {
 				.build();
 	}
 
+	/**
+	 * Verify a user account
+	 *
+	 * @param verifyRequest Request containing email and verification code
+	 * @return Success reponse
+	 */
 	@PostMapping("/verify")
 	public CustomResponse<Void> verifyAccount(@Valid @RequestBody VerifyRequest verifyRequest) {
 		this.authenticationService.verifyUser(verifyRequest.email(), verifyRequest.verificationCode());
+		return CustomResponse.SUCCESS;
+	}
+
+	/**
+	 * Resend verification code
+	 *
+	 * @param email The email to send the verification code to
+	 * @return Success response
+	 */
+	@PostMapping("/resend-verification")
+	public CustomResponse<Void> resendVerification(@RequestParam String email) {
+		this.authenticationService.resendVerificationCode(email);
 		return CustomResponse.SUCCESS;
 	}
 

@@ -73,7 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			throw new ResourceAlreadyExistsException(messageService.getMessage("error.user.exists"));
 		}
 
-		//TODO: validate here (myb some validation service)
+		// TODO: validate here (myb some validation service)
 		UserEntity newUser = requestMapper.map(registerRequest);
 
 		RoleEntity userRole = roleRepository.findByName("ROLE_USER")
@@ -127,6 +127,40 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		userRepository.save(user);
 
 		LOGGER.info("User account verified: {}", email);
+	}
+
+	@Override
+	@Transactional
+	public void resendVerificationCode(String email) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.resendVerificationCode({})", CLASS_NAME, email);
+		}
+
+		UserEntity user = getUserByEmailOrThrow(email);
+
+		if (user.isEnabled()) {
+			throw new BusinessException(messageService.getMessage("error.user.already_verified"));
+		}
+
+		// TODO: add some way of preventing spam
+		String verificationCode = generateAlphanumericCode();
+		user.setVerificationCode(verificationCode);
+		user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
+
+		userRepository.save(user);
+
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCommit() {
+				try {
+					sendVerificationEmail(user);
+					LOGGER.info("Verification code resent to: {}", email);
+				} catch (Exception e) {
+					LOGGER.error("Failed to send verification email: {}", e.getMessage(), e);
+					// here tho a retry mechanism
+				}
+			}
+		});
 	}
 
 	/**

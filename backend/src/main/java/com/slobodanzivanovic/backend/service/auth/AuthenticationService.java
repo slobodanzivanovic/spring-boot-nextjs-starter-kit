@@ -22,4 +22,11 @@ public interface AuthenticationService {
 	 */
 	void verifyUser(String email, String verificationCode);
 
+	/**
+	 * Resends the verification code to a users email
+	 *
+	 * @param email The email to send the verification code to
+	 */
+	void resendVerificationCode(String email);
+
 }
