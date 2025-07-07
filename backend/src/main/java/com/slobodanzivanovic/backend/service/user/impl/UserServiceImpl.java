@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.slobodanzivanovic.backend.exception.BusinessException;
 import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
 import com.slobodanzivanovic.backend.model.storage.entity.UploadedFile;
+import com.slobodanzivanovic.backend.model.user.dto.request.UpdateProfileRequest;
 import com.slobodanzivanovic.backend.model.user.dto.response.UserResponse;
 import com.slobodanzivanovic.backend.model.user.mapper.UserMapper;
 import com.slobodanzivanovic.backend.repository.auth.UserRepository;
@@ -83,6 +84,47 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(messageService.getMessage("error.profile.image.update.failed"));
 		}
 
+	}
+
+	@Override
+	@Transactional
+	public UserResponse updateProfile(UpdateProfileRequest request) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.updateProfile({})", CLASS_NAME, request);
+		}
+
+		UserEntity currentUser = authHelper.getCurrentAuthenticatedUser();
+
+		if (request.firstName() != null && !request.firstName().trim().isEmpty()) {
+			currentUser.setFirstName(request.firstName().trim());
+		}
+
+		if (request.lastName() != null && !request.lastName().trim().isEmpty()) {
+			currentUser.setLastName(request.lastName().trim());
+		}
+
+		// TODO: revisit this
+		if (request.phoneNumber() != null) {
+			if (request.phoneNumber().trim().isEmpty()) {
+				currentUser.setPhoneNumber(null);
+			} else {
+				currentUser.setPhoneNumber(request.phoneNumber().trim());
+			}
+		}
+
+		if (request.birthDate() != null) {
+			currentUser.setBirthDate(request.birthDate());
+		}
+
+		if (request.gender() != null && !request.gender().trim().isEmpty()) {
+			currentUser.setGender(request.gender().trim());
+		}
+
+		UserEntity savedUser = userRepository.save(currentUser);
+
+		LOGGER.info("Profile updated for user: {}", currentUser.getUsername());
+
+		return userMapper.map(savedUser);
 	}
 
 	/**
