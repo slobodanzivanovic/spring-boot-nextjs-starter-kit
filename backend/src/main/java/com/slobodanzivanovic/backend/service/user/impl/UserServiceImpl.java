@@ -1,18 +1,22 @@
 package com.slobodanzivanovic.backend.service.user.impl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.slobodanzivanovic.backend.exception.BusinessException;
+import com.slobodanzivanovic.backend.exception.ValidationException;
 import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
 import com.slobodanzivanovic.backend.model.storage.entity.UploadedFile;
+import com.slobodanzivanovic.backend.model.user.dto.request.ChangePasswordRequest;
 import com.slobodanzivanovic.backend.model.user.dto.request.UpdateProfileRequest;
 import com.slobodanzivanovic.backend.model.user.dto.response.UserResponse;
 import com.slobodanzivanovic.backend.model.user.mapper.UserMapper;
@@ -46,6 +50,7 @@ public class UserServiceImpl implements UserService {
 	private final AuthHelper authHelper;
 	private final FileUploadService fileUploadService;
 	private final UserMapper userMapper;
+	private final BCryptPasswordEncoder passwordEncoder;
 
 	@Override
 	@Transactional
@@ -125,6 +130,35 @@ public class UserServiceImpl implements UserService {
 		LOGGER.info("Profile updated for user: {}", currentUser.getUsername());
 
 		return userMapper.map(savedUser);
+	}
+
+	@Override
+	@Transactional
+	public void changePassword(ChangePasswordRequest request) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.changePassword() for user", CLASS_NAME);
+		}
+
+		UserEntity currentUser = authHelper.getCurrentAuthenticatedUser();
+
+		if (!request.isPasswordsMatch()) {
+			throw new ValidationException(messageService.getMessage("error.password.mismatch"));
+		}
+
+		if (!passwordEncoder.matches(request.currentPassword(), currentUser.getPassword())) {
+			throw new ValidationException(messageService.getMessage("error.password.current.invalid"));
+		}
+
+		if (passwordEncoder.matches(request.newPassword(), currentUser.getPassword())) {
+			throw new ValidationException(messageService.getMessage("error.password.same.as.current"));
+		}
+
+		currentUser.setPassword(passwordEncoder.encode(request.newPassword()));
+		currentUser.setPasswordChangedAt(LocalDateTime.now());
+
+		userRepository.save(currentUser);
+
+		LOGGER.info("Password changed successfully for user: {}", currentUser.getUsername());
 	}
 
 	/**

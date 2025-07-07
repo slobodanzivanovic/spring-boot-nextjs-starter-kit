@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
 import com.slobodanzivanovic.backend.model.common.dto.CustomResponse;
+import com.slobodanzivanovic.backend.model.user.dto.request.ChangePasswordRequest;
 import com.slobodanzivanovic.backend.model.user.dto.request.UpdateProfileRequest;
 import com.slobodanzivanovic.backend.model.user.dto.response.UserResponse;
 import com.slobodanzivanovic.backend.model.user.mapper.UserMapper;
@@ -25,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * @author Slobodan Zivanovic
+ *
+ * TODO: revisit change endpoint names prob
  */
 @RestController
 @RequestMapping("/api/v1/users")
@@ -65,6 +68,16 @@ public class UserController {
 				.httpStatus(HttpStatus.OK)
 				.isSuccess(true)
 				.response(updatedUser)
+				.build();
+	}
+
+	@PutMapping("/password")
+	public CustomResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+		userService.changePassword(changePasswordRequest);
+
+		return CustomResponse.<Void>builder()
+				.httpStatus(HttpStatus.OK)
+				.isSuccess(true)
 				.build();
 	}
 
