@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.slobodanzivanovic.backend.model.auth.dto.request.LoginRequest;
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
 import com.slobodanzivanovic.backend.model.auth.dto.request.VerifyRequest;
+import com.slobodanzivanovic.backend.model.auth.dto.response.LoginResponse;
 import com.slobodanzivanovic.backend.model.common.dto.CustomResponse;
 import com.slobodanzivanovic.backend.service.auth.AuthenticationService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -69,6 +72,27 @@ public class AuthController {
 	public CustomResponse<Void> resendVerification(@RequestParam String email) {
 		this.authenticationService.resendVerificationCode(email);
 		return CustomResponse.SUCCESS;
+	}
+
+	/**
+	 * Process user login.
+	 *
+	 * @param loginRequest The login credentials containing identifier (username or
+	 *                     email) and password
+	 * @return Response containing JWT token on successful authentication
+	 */
+	@PostMapping("/login")
+	public CustomResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest,
+			HttpServletRequest request) {
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.info("Login request from IP {}: {}", request.getRemoteAddr(), loginRequest);
+		}
+		LoginResponse loginResponse = this.authenticationService.login(loginRequest);
+		return CustomResponse.<LoginResponse>builder()
+				.httpStatus(HttpStatus.OK)
+				.isSuccess(true)
+				.response(loginResponse)
+				.build();
 	}
 
 }

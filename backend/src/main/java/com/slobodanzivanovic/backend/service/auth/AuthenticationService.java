@@ -1,6 +1,8 @@
 package com.slobodanzivanovic.backend.service.auth;
 
+import com.slobodanzivanovic.backend.model.auth.dto.request.LoginRequest;
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
+import com.slobodanzivanovic.backend.model.auth.dto.response.LoginResponse;
 
 /**
  * @author Slobodan Zivanovic
@@ -28,5 +30,13 @@ public interface AuthenticationService {
 	 * @param email The email to send the verification code to
 	 */
 	void resendVerificationCode(String email);
+
+	/**
+	 * Authenticates a user and generates a JWT token
+	 *
+	 * @param loginRequest The login request containing credentials
+	 * @return A login response containing the JWT token and expiration time
+	 */
+	LoginResponse login(LoginRequest loginRequest);
 
 }

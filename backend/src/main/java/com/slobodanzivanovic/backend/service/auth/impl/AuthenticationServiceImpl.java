@@ -7,27 +7,40 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.slobodanzivanovic.backend.exception.AuthenticationException;
 import com.slobodanzivanovic.backend.exception.BusinessException;
 import com.slobodanzivanovic.backend.exception.ExternalServiceException;
 import com.slobodanzivanovic.backend.exception.ResourceAlreadyExistsException;
 import com.slobodanzivanovic.backend.exception.ResourceNotFoundException;
 import com.slobodanzivanovic.backend.exception.ValidationException;
+import com.slobodanzivanovic.backend.model.auth.dto.request.LoginRequest;
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
+import com.slobodanzivanovic.backend.model.auth.dto.response.LoginResponse;
 import com.slobodanzivanovic.backend.model.auth.entity.RoleEntity;
 import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
 import com.slobodanzivanovic.backend.model.auth.mapper.RequestMapper;
 import com.slobodanzivanovic.backend.repository.auth.RoleRepository;
 import com.slobodanzivanovic.backend.repository.auth.UserRepository;
+import com.slobodanzivanovic.backend.security.jwt.CustomUserDetails;
+import com.slobodanzivanovic.backend.security.jwt.JwtService;
 import com.slobodanzivanovic.backend.service.auth.AuthenticationService;
 import com.slobodanzivanovic.backend.service.email.EmailService;
 import com.slobodanzivanovic.backend.service.localization.MessageService;
 
 import jakarta.mail.MessagingException;
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Slobodan Zivanovic
@@ -44,18 +57,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final RoleRepository roleRepository;
 	private final RequestMapper requestMapper;
 	private final EmailService emailService;
+	private final AuthenticationManager authenticationManager;
+	private final JwtService jwtService;
 
 	public AuthenticationServiceImpl(
 			MessageService messageService,
 			UserRepository userRepository,
 			RoleRepository roleRepository,
 			RequestMapper requestMapper,
-			EmailService emailService) {
+			EmailService emailService,
+			AuthenticationManager authenticationManager,
+			JwtService jwtService) {
 		this.messageService = messageService;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.requestMapper = requestMapper;
 		this.emailService = emailService;
+		this.authenticationManager = authenticationManager;
+		this.jwtService = jwtService;
 	}
 
 	@Override
@@ -163,6 +182,74 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		});
 	}
 
+	@Override
+	@Transactional(noRollbackFor = AuthenticationException.class)
+	public LoginResponse login(LoginRequest loginRequest) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.login({})", CLASS_NAME, loginRequest);
+		}
+
+		if (loginRequest == null || loginRequest.identifier() == null || loginRequest.password() == null) {
+			throw new ValidationException(messageService.getMessage("error.login.null"));
+		}
+
+		UserEntity user = userRepository.findByUsername(loginRequest.identifier())
+				.or(() -> userRepository.findByEmail(loginRequest.identifier()))
+				.orElseThrow(() -> new AuthenticationException(messageService.getMessage("error.login.invalid")));
+
+		if (!user.isAccountNonLocked()) {
+			if (user.canUnlockAccount()) {
+				user.setAccountNonLocked(true);
+				user.setAccountLockedUntil(null);
+				user.resetFailedLoginAttempts();
+				userRepository.save(user);
+			} else {
+				throw new AuthenticationException(messageService.getMessage("error.login.account_locked"));
+			}
+		}
+
+		try {
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.identifier(), loginRequest.password()));
+
+			user.resetFailedLoginAttempts();
+			String clientIp = getCurrentClientIp();
+			user.recordSuccessfulLogin(clientIp);
+			userRepository.save(user);
+
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+			if (!userDetails.isEnabled()) {
+				throw new AuthenticationException(messageService.getMessage("error.login.disabled"));
+			}
+
+			String token = jwtService.generateToken(userDetails);
+			long tokenExpirationTime = jwtService.extractClaim(token,
+					claims -> claims.getExpiration().getTime() - System.currentTimeMillis());
+
+			LOGGER.info("User logged in successfully: {}", userDetails.getUsername());
+
+			return new LoginResponse(token, tokenExpirationTime);
+
+		} catch (BadCredentialsException e) {
+			boolean wasLocked = user.incrementFailedLoginAttempts(5, 30);
+			userRepository.save(user);
+
+			if (wasLocked) {
+				LOGGER.warn("Account locked due to multiple failed login attempts: {}", loginRequest.identifier());
+			}
+
+			LOGGER.warn("Authentication failed for user {}: {}", loginRequest.identifier(), e.getMessage());
+			throw new AuthenticationException(messageService.getMessage("error.login.invalid"));
+		} catch (DisabledException e) {
+			LOGGER.warn("Attempted login to disabled account: {}", loginRequest.identifier());
+			throw new AuthenticationException(messageService.getMessage("error.login.disabled"));
+		} catch (Exception e) {
+			LOGGER.error("Authentication error: {}", e.getMessage(), e);
+			throw new AuthenticationException(messageService.getMessage("error.login.invalid"));
+		}
+
+	}
+
 	/**
 	 * Generates random alphanumeric verification code. Excluding (O, 0, 1, I)
 	 *
@@ -204,6 +291,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private UserEntity getUserByEmailOrThrow(String email) {
 		return userRepository.findByEmail(email)
 				.orElseThrow(() -> new ResourceNotFoundException(messageService.getMessage("error.user.not.found")));
+	}
+
+	private String getCurrentClientIp() {
+		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		if (attributes != null) {
+			HttpServletRequest request = attributes.getRequest();
+			String xForwardedFor = request.getHeader("X-Forwarded-For");
+			if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+				return xForwardedFor.split(",")[0].trim();
+			}
+			return request.getRemoteAddr();
+		}
+		return "unknown";
 	}
 
 }

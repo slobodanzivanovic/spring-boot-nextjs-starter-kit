@@ -17,12 +17,40 @@ spring:
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${OAUTH_GOOGLE_CLIENT_ID}
+            client-secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+          github:
+            client-id: ${OAUTH_GITHUB_CLIENT_ID}
+            client-secret: ${OAUTH_GITHUB_CLIENT_SECRET}
+            scope:
+              - user:email
+              - read:user
+
+jwt:
+  token:
+    secret-key: ${JWT_SECRET_KEY}
+    expiration: ${JWT_TOKEN_EXPIRATION}
+
+app:
+  login:
+    success:
+      url: ${APP_LOGIN_SUCCESS_URL}
+
 logging:
   level:
     root: INFO
     com.slobodanzivanovic.backend: TRACE
     org.springframework: INFO
     org.hibernate: INFO
+    org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer: ERROR
 
 springdoc:
   swagger-ui:
