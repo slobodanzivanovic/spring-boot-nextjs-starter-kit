@@ -46,4 +46,20 @@ public interface AuthenticationService {
 	 */
 	void logout(String token);
 
+	/**
+	 * Initiates a password reset by sending a reset token
+	 *
+	 * @param email The email of the account to reset the password for
+	 */
+	void requestPasswordReset(String email);
+
+	/**
+	 * Resets a user password
+	 *
+	 * @param email              The email of the account
+	 * @param passwordResetToken The password reset token sent to the user's email
+	 * @param newPassword        The new password
+	 */
+	void resetPassword(String email, String passwordResetToken, String newPassword);
+
 }

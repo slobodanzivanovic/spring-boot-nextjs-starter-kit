@@ -3,16 +3,19 @@ package com.slobodanzivanovic.backend.service.auth.impl;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -63,6 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
 	private final TokenBlacklistService tokenBlacklistService;
+	private final BCryptPasswordEncoder passwordEncoder;
 
 	public AuthenticationServiceImpl(
 			MessageService messageService,
@@ -72,7 +76,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			EmailService emailService,
 			AuthenticationManager authenticationManager,
 			JwtService jwtService,
-			TokenBlacklistService tokenBlacklistService) {
+			TokenBlacklistService tokenBlacklistService,
+			BCryptPasswordEncoder passwordEncoder) {
 		this.messageService = messageService;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
@@ -81,6 +86,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		this.authenticationManager = authenticationManager;
 		this.jwtService = jwtService;
 		this.tokenBlacklistService = tokenBlacklistService;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -271,6 +277,95 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		LOGGER.info("User logged out and token blacklisted: {}", token);
 	}
 
+	@Override
+	@Transactional
+	public void requestPasswordReset(String email) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.requestPasswordReset({})", CLASS_NAME, email);
+		}
+
+		UserEntity user = getUserByEmailOrThrow(email);
+
+		String passwordResetToken = generateAlphanumericCode();
+		user.setPasswordResetToken(passwordResetToken);
+		user.setPasswordResetExpiresAt(LocalDateTime.now().plusMinutes(15));
+
+		userRepository.save(user);
+
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+			@Override
+			public void afterCommit() {
+				try {
+					sendPasswordResetEmail(user);
+				} catch (Exception e) {
+					LOGGER.error("Failed to send password reset email: {}", e.getMessage(), e);
+					// retry mechanism?
+				}
+			}
+		});
+	}
+
+	@Override
+	@Transactional
+	public void resetPassword(String email, String passwordResetToken, String newPassword) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.resetPassword({}, {})", CLASS_NAME, email, passwordResetToken);
+		}
+
+		UserEntity user = getUserByEmailOrThrow(email);
+
+		// TOOD: add check if password is equal also on backend
+
+		if (user.isPasswordResetTokenExpired()) {
+			throw new BusinessException(messageService.getMessage("error.user.reset_token_expired"));
+		}
+
+		if (!user.getPasswordResetToken().equals(passwordResetToken)) {
+			throw new ValidationException(messageService.getMessage("error.user.reset_token"));
+		}
+
+		if (newPassword.length() < 8) {
+			throw new ValidationException(messageService.getMessage("error.user.password.length"));
+		}
+
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setPasswordChangedAt(LocalDateTime.now());
+		user.setPasswordResetToken(null);
+		user.setPasswordResetExpiresAt(null);
+		userRepository.save(user);
+
+		// NOTE: This will just log for now until we add redis
+		tokenBlacklistService.blacklistAllUserTokens(user.getId());
+
+		LOGGER.info("User password reset successfully for: {}", email);
+	}
+
+	/**
+	 * Scheduled task to clean up expired verification codes
+	 * Runs periodically to find and clear expired verification codes
+	 * from user accounts that have not been verified.
+	 */
+	@Scheduled(cron = "0 0 * * * ?") // NOTE: maybe make it run every day or 3,4 hours...
+	@Transactional
+	public void cleanupExpiredVerificationCodes() {
+		LOGGER.info("Cleaning up expired verification codes");
+		LocalDateTime now = LocalDateTime.now();
+
+		List<UserEntity> usersWithExpiredCodes = userRepository
+				.findByVerificationCodeExpiresAtBeforeAndEnabledFalse(now);
+
+		for (UserEntity user : usersWithExpiredCodes) {
+			LOGGER.debug("Clearing expired verification code for user: {}", user.getEmail());
+			user.setVerificationCode(null);
+			user.setVerificationCodeExpiresAt(null);
+		}
+
+		if (!usersWithExpiredCodes.isEmpty()) {
+			userRepository.saveAll(usersWithExpiredCodes);
+			LOGGER.info("Cleaned up {} expired verification codes", usersWithExpiredCodes.size());
+		}
+	}
+
 	/**
 	 * Generates random alphanumeric verification code. Excluding (O, 0, 1, I)
 	 *
@@ -325,6 +420,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			return request.getRemoteAddr();
 		}
 		return "unknown";
+	}
+
+	/**
+	 * Sends a password reset email to a user
+	 *
+	 * @param user The user to send the password reset email to
+	 * @throws ExternalServiceException If sending the email fails
+	 */
+	private void sendPasswordResetEmail(UserEntity user) {
+		String subject = messageService.getMessage("email.password.reset.subject");
+
+		try {
+			Map<String, Object> templateModel = new HashMap<>();
+			templateModel.put("passwordResetToken", user.getPasswordResetToken());
+
+			emailService.sendTemplatedEmail(user.getEmail(), subject, "password-reset", templateModel);
+		} catch (MessagingException e) {
+			LOGGER.error("Failed to send password reset email: {}", e.getMessage(), e);
+			throw new ExternalServiceException(messageService.getMessage("email.password.reset.failed"), e);
+		}
 	}
 
 }

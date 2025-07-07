@@ -36,7 +36,7 @@ public class AuthController {
 	private final AuthenticationService authenticationService;
 
 	/**
-	 * Register a new user.
+	 * Register a new user
 	 *
 	 * @param registerRequest The registration details
 	 */
@@ -75,7 +75,7 @@ public class AuthController {
 	}
 
 	/**
-	 * Process user login.
+	 * Process user login
 	 *
 	 * @param loginRequest The login credentials containing identifier (username or
 	 *                     email) and password
@@ -96,7 +96,7 @@ public class AuthController {
 	}
 
 	/**
-	 * Process user logout.
+	 * Process user logout
 	 *
 	 * @param request The HTTP request containing the JWT token in the Authorization
 	 *                header
@@ -109,6 +109,35 @@ public class AuthController {
 			String token = authHeader.substring(7);
 			this.authenticationService.logout(token);
 		}
+		return CustomResponse.SUCCESS;
+	}
+
+	/**
+	 * Request a password reset for a user
+	 *
+	 * @param email The email of the user requesting password reset
+	 * @return Success response after sending the password reset code
+	 */
+	@PostMapping("/request-password-reset")
+	public CustomResponse<Void> requestPasswordReset(@RequestParam String email) {
+		this.authenticationService.requestPasswordReset(email);
+		return CustomResponse.SUCCESS;
+	}
+
+	/**
+	 * Reset a user's password using a verification code
+	 *
+	 * @param email            The user's email
+	 * @param verificationCode The verification code sent to the user's email
+	 * @param newPassword      The new password
+	 * @return Success response after password reset
+	 */
+	@PostMapping("/reset-password")
+	public CustomResponse<Void> resetPassword(
+			@RequestParam String email,
+			@RequestParam String verificationCode,
+			@RequestParam String newPassword) {
+		this.authenticationService.resetPassword(email, verificationCode, newPassword);
 		return CustomResponse.SUCCESS;
 	}
 
