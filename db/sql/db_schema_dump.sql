@@ -75,8 +75,29 @@ VALUES
 )
 ON CONFLICT (name) DO NOTHING;
 
+CREATE TABLE IF NOT EXISTS public.uploaded_files (
+    id uuid PRIMARY KEY,
+    url VARCHAR(255) NOT NULL,
+    size BIGINT,
+    original_file_name VARCHAR(255),
+    extension VARCHAR(50),
+    uploaded_at TIMESTAMP(6) WITHOUT TIME ZONE,
+    user_id uuid,
+    created_at TIMESTAMP(6) WITHOUT TIME ZONE,
+    updated_at TIMESTAMP(6) WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255),
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    deleted_at TIMESTAMP(6) WITHOUT TIME ZONE,
+    deleted_by VARCHAR(255),
+    version BIGINT,
+    CONSTRAINT fk_uploaded_files_user FOREIGN KEY (user_id) REFERENCES public.users (id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_users_enabled ON public.users (enabled);
 CREATE INDEX IF NOT EXISTS idx_users_account_non_locked ON public.users (account_non_locked);
 CREATE INDEX IF NOT EXISTS idx_users_deleted ON public.users (deleted);
 CREATE INDEX IF NOT EXISTS idx_roles_status ON public.roles (status);
 CREATE INDEX IF NOT EXISTS idx_roles_deleted ON public.roles (deleted);
+CREATE INDEX IF NOT EXISTS idx_uploaded_files_user_id ON public.uploaded_files (user_id);
+CREATE INDEX IF NOT EXISTS idx_uploaded_files_deleted ON public.uploaded_files (deleted);
