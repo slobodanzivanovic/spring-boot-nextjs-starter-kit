@@ -3,6 +3,7 @@ package com.slobodanzivanovic.backend.controller.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
 import com.slobodanzivanovic.backend.model.common.dto.CustomResponse;
 import com.slobodanzivanovic.backend.model.user.dto.request.ChangePasswordRequest;
+import com.slobodanzivanovic.backend.model.user.dto.request.DeleteAccountRequest;
 import com.slobodanzivanovic.backend.model.user.dto.request.UpdateProfileRequest;
 import com.slobodanzivanovic.backend.model.user.dto.response.UserResponse;
 import com.slobodanzivanovic.backend.model.user.mapper.UserMapper;
@@ -27,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * @author Slobodan Zivanovic
  *
- * TODO: revisit change endpoint names prob
+ *         TODO: revisit change endpoint names prob
  */
 @RestController
 @RequestMapping("/api/v1/users")
@@ -74,6 +76,16 @@ public class UserController {
 	@PutMapping("/password")
 	public CustomResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
 		userService.changePassword(changePasswordRequest);
+
+		return CustomResponse.<Void>builder()
+				.httpStatus(HttpStatus.OK)
+				.isSuccess(true)
+				.build();
+	}
+
+	@DeleteMapping("/account")
+	public CustomResponse<Void> deleteAccount(@Valid @RequestBody DeleteAccountRequest deleteAccountRequest) {
+		userService.deleteAccount(deleteAccountRequest);
 
 		return CustomResponse.<Void>builder()
 				.httpStatus(HttpStatus.OK)

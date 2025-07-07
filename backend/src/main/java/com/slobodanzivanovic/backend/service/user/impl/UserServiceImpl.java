@@ -17,6 +17,7 @@ import com.slobodanzivanovic.backend.exception.ValidationException;
 import com.slobodanzivanovic.backend.model.auth.entity.UserEntity;
 import com.slobodanzivanovic.backend.model.storage.entity.UploadedFile;
 import com.slobodanzivanovic.backend.model.user.dto.request.ChangePasswordRequest;
+import com.slobodanzivanovic.backend.model.user.dto.request.DeleteAccountRequest;
 import com.slobodanzivanovic.backend.model.user.dto.request.UpdateProfileRequest;
 import com.slobodanzivanovic.backend.model.user.dto.response.UserResponse;
 import com.slobodanzivanovic.backend.model.user.mapper.UserMapper;
@@ -159,6 +160,25 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(currentUser);
 
 		LOGGER.info("Password changed successfully for user: {}", currentUser.getUsername());
+	}
+
+	@Override
+	@Transactional
+	public void deleteAccount(DeleteAccountRequest request) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.deleteAccount()", CLASS_NAME);
+		}
+
+		UserEntity currentUser = authHelper.getCurrentAuthenticatedUser();
+
+		if (!passwordEncoder.matches(request.password(), currentUser.getPassword())) {
+			throw new ValidationException(messageService.getMessage("error.password.invalid"));
+		}
+
+		currentUser.softDelete(currentUser.getUsername());
+		userRepository.save(currentUser);
+
+		LOGGER.info("Account deleted for user: {}", currentUser.getUsername());
 	}
 
 	/**

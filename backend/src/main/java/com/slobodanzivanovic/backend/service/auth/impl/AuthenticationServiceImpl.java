@@ -194,6 +194,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		});
 	}
 
+	// TODO: ADD CHECK IF ACCOUNT IS PREVIOUSLY DELETED account.disabled it too generic
 	@Override
 	@Transactional(noRollbackFor = AuthenticationException.class)
 	public LoginResponse login(LoginRequest loginRequest) {
