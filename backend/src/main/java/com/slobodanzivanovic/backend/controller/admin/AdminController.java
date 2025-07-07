@@ -1,8 +1,11 @@
 package com.slobodanzivanovic.backend.controller.admin;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +37,18 @@ public class AdminController {
 				.httpStatus(HttpStatus.OK)
 				.isSuccess(true)
 				.response(users)
+				.build();
+	}
+
+	@GetMapping("/users/{userId}")
+	public CustomResponse<UserResponse> getUserById(@PathVariable UUID userId) {
+
+		UserResponse user = adminService.getUserById(userId);
+
+		return CustomResponse.<UserResponse>builder()
+				.httpStatus(HttpStatus.OK)
+				.isSuccess(true)
+				.response(user)
 				.build();
 	}
 
