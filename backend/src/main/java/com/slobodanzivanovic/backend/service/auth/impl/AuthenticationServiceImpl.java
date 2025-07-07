@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -24,6 +25,7 @@ import com.slobodanzivanovic.backend.exception.BusinessException;
 import com.slobodanzivanovic.backend.exception.ExternalServiceException;
 import com.slobodanzivanovic.backend.exception.ResourceAlreadyExistsException;
 import com.slobodanzivanovic.backend.exception.ResourceNotFoundException;
+import com.slobodanzivanovic.backend.exception.TokenException;
 import com.slobodanzivanovic.backend.exception.ValidationException;
 import com.slobodanzivanovic.backend.model.auth.dto.request.LoginRequest;
 import com.slobodanzivanovic.backend.model.auth.dto.request.RegisterRequest;
@@ -35,6 +37,7 @@ import com.slobodanzivanovic.backend.repository.auth.RoleRepository;
 import com.slobodanzivanovic.backend.repository.auth.UserRepository;
 import com.slobodanzivanovic.backend.security.jwt.CustomUserDetails;
 import com.slobodanzivanovic.backend.security.jwt.JwtService;
+import com.slobodanzivanovic.backend.security.jwt.TokenBlacklistService;
 import com.slobodanzivanovic.backend.service.auth.AuthenticationService;
 import com.slobodanzivanovic.backend.service.email.EmailService;
 import com.slobodanzivanovic.backend.service.localization.MessageService;
@@ -59,6 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final EmailService emailService;
 	private final AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
+	private final TokenBlacklistService tokenBlacklistService;
 
 	public AuthenticationServiceImpl(
 			MessageService messageService,
@@ -67,7 +71,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			RequestMapper requestMapper,
 			EmailService emailService,
 			AuthenticationManager authenticationManager,
-			JwtService jwtService) {
+			JwtService jwtService,
+			TokenBlacklistService tokenBlacklistService) {
 		this.messageService = messageService;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
@@ -75,6 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		this.emailService = emailService;
 		this.authenticationManager = authenticationManager;
 		this.jwtService = jwtService;
+		this.tokenBlacklistService = tokenBlacklistService;
 	}
 
 	@Override
@@ -248,6 +254,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			throw new AuthenticationException(messageService.getMessage("error.login.invalid"));
 		}
 
+	}
+
+	@Override
+	public void logout(String token) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("{}.logout({})", CLASS_NAME, token);
+		}
+
+		if (token == null || token.isEmpty()) {
+			throw new TokenException(messageService.getMessage("error.token.null"));
+		}
+
+		tokenBlacklistService.blacklistToken(token);
+		SecurityContextHolder.clearContext();
+		LOGGER.info("User logged out and token blacklisted: {}", token);
 	}
 
 	/**

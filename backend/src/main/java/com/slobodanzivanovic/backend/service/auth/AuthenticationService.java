@@ -39,4 +39,11 @@ public interface AuthenticationService {
 	 */
 	LoginResponse login(LoginRequest loginRequest);
 
+	/**
+	 * Logs out a user by invalidating their JWT token
+	 *
+	 * @param token The jwt token to invalidate
+	 */
+	void logout(String token);
+
 }

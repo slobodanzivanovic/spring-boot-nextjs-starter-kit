@@ -95,4 +95,21 @@ public class AuthController {
 				.build();
 	}
 
+	/**
+	 * Process user logout.
+	 *
+	 * @param request The HTTP request containing the JWT token in the Authorization
+	 *                header
+	 * @return Success response after logout
+	 */
+	@PostMapping("/logout")
+	public CustomResponse<Void> logout(HttpServletRequest request) {
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			String token = authHeader.substring(7);
+			this.authenticationService.logout(token);
+		}
+		return CustomResponse.SUCCESS;
+	}
+
 }
