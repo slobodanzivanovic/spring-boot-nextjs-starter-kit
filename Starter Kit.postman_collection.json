@@ -48,7 +48,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"slobodan.zivanovic@tuta.com\",\n    \"verificationCode\": \"KAYZSE\"\n}",
+							"raw": "{\n    \"email\": \"slobodan.zivanovic@tuta.com\",\n    \"verificationCode\": \"44RB4P\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -124,7 +124,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"identifier\": \"slobodan\",\n    \"password\": \"passw0rd\"\n}",
+							"raw": "{\n    \"identifier\": \"slobodan\",\n    \"password\": \"passw0rd1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -337,6 +337,99 @@
 							}
 						},
 						"url": "{{base_url}}/api/v1/users/account"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/api/v1/admin/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/api/v1/admin/users/18f09bb7-32fd-479c-a937-2d9495bb566b"
+					},
+					"response": []
+				},
+				{
+					"name": "Update user roles",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    \"USER\",\n    \"ADMIN\"\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/api/v1/admin/users/18f09bb7-32fd-479c-a937-2d9495bb566b/roles"
+					},
+					"response": []
+				},
+				{
+					"name": "Update user lock status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/users/18f09bb7-32fd-479c-a937-2d9495bb566b/lock?locked=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"users",
+								"18f09bb7-32fd-479c-a937-2d9495bb566b",
+								"lock"
+							],
+							"query": [
+								{
+									"key": "locked",
+									"value": "false"
+								}
+							]
+						}
 					},
 					"response": []
 				}
