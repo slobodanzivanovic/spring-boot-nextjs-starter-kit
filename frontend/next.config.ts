@@ -2,7 +2,10 @@ import type {NextConfig} from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production" ? {exclude: ["error"]} : false,
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();
