@@ -3,10 +3,10 @@ export type AuthorsConfig = {
   url: string;
 };
 
-// export type ThemeColors = {
-//   media: string;
-//   color: string;
-// }
+export type ThemeColors = {
+  media: string;
+  color: string;
+};
 
 export type SiteConfig = {
   name: string;
@@ -20,8 +20,8 @@ export type SiteConfig = {
     email: string;
   };
   creator: string;
-  // themeColors?: string | ThemeColors[];
-  // defaultNextTheme?: string;
+  themeColors?: string | ThemeColors[];
+  defaultNextTheme?: string;
   icons: {
     icon: string;
     shortcut?: string;

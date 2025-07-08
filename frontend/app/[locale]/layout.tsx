@@ -1,12 +1,15 @@
+import Container from "@/components/common/Container";
+import {siteConfig} from "@/config/site";
+import {Locale} from "@/i18n/navigation";
+import {DEFAULT_LOCALE, routing} from "@/i18n/routing";
+import {constructMetadata} from "@/lib/metadata";
+import "@/styles/globals.css";
+import {Analytics} from "@vercel/analytics/next";
+import {Metadata, Viewport} from "next";
 import {hasLocale, NextIntlClientProvider} from "next-intl";
 import {getMessages, getTranslations} from "next-intl/server";
-import {Metadata} from "next";
+import {ThemeProvider} from "next-themes";
 import {notFound} from "next/navigation";
-import {DEFAULT_LOCALE, routing} from "@/i18n/routing";
-import {Locale} from "@/i18n/navigation";
-import {constructMetadata} from "@/lib/metadata";
-import {Analytics} from "@vercel/analytics/next";
-import "@/styles/globals.css";
 
 type MetadataProps = {
   params: Promise<{locale: string}>;
@@ -27,6 +30,10 @@ export async function generateMetadata({
   });
 }
 
+export const viewport: Viewport = {
+  themeColor: siteConfig.themeColors,
+};
+
 export default async function RootLayout({
   children,
   params,
@@ -46,7 +53,13 @@ export default async function RootLayout({
       <head />
       <body>
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme={siteConfig.defaultNextTheme}
+            enableSystem
+          >
+            <Container size="large">{children}</Container>
+          </ThemeProvider>
         </NextIntlClientProvider>
 
         {process.env.NODE_ENV === "development" ? (

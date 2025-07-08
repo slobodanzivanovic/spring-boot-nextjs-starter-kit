@@ -3,5 +3,11 @@
     "title": "Pocetni paket",
     "tagLine": "Pocetni paket za fullstack aplikacije",
     "description": "Pocetni paket za fullstack aplikacije"
+  },
+  "CommonTheme": {
+    "toggleTheme": "Promeni temu",
+    "light": "Svetla",
+    "dark": "Tamna",
+    "system": "Sistemska"
   }
 }

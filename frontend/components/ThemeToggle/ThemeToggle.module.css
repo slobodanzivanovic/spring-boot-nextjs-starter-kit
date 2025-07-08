@@ -1,0 +1,73 @@
+.themeToggle {
+  position: relative;
+  display: inline-block;
+}
+
+.toggleButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid var(--color-neutral-stroke1);
+  color: var(--color-neutral-foreground1);
+  font-family: var(--font-family-sans);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.toggleButton:hover {
+  background-color: var(--color-neutral-background1-hover);
+}
+
+.label {
+  font-size: 14px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background-color: var(--color-neutral-background1);
+  border: 1px solid var(--color-neutral-stroke1);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px var(--color-neutral-shadow-ambient-lighter);
+  overflow: hidden;
+  z-index: 10;
+  min-width: 150px;
+}
+
+.dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--color-neutral-foreground1);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: var(--font-family-sans);
+}
+
+.dropdown button:hover {
+  background-color: var(--color-neutral-background1-hover);
+}
+
+.dropdown button.active {
+  background-color: var(--color-neutral-background1-selected);
+  font-weight: 500;
+}
+
+.menuIcon {
+  width: 14px;
+  height: 14px;
+}

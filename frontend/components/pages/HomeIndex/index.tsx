@@ -2,6 +2,7 @@
 
 import {useTranslations} from "next-intl";
 import styles from "./page.module.css";
+import {ThemeToggle} from "@/components/ThemeToggle";
 
 export default function HomeIndex() {
   const t = useTranslations("Home");
@@ -18,8 +19,8 @@ export default function HomeIndex() {
 
   return (
     <div className={styles.page}>
-
       <h1>{t("title")}</h1>
+      <ThemeToggle />
 
       <div>
         <h2>Login with</h2>

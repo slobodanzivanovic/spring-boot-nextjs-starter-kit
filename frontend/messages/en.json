@@ -3,5 +3,11 @@
     "title": "Starter Kit",
     "tagLine": "A starter kit for fullstack apps",
     "description": "A starter kit for fullstack apps"
+  },
+  "CommonTheme": {
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   }
 }
