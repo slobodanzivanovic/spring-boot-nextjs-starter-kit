@@ -1,0 +1,33 @@
+.divider {
+  position: relative;
+  border: none;
+  margin: 1rem 0;
+  font-family: var(--font-family-sans);
+}
+
+.horizontal {
+  height: 1px;
+  background-color: var(--color-neutral-stroke1);
+  width: 100%;
+  text-align: center;
+}
+
+.vertical {
+  width: 1px;
+  background-color: var(--color-neutral-stroke1);
+  height: 100%;
+  min-height: 1rem;
+  display: inline-block;
+  margin: 0 0.5rem;
+  vertical-align: middle;
+}
+
+.text {
+  position: relative;
+  display: inline-block;
+  background-color: var(--color-neutral-background2);
+  padding: 0 0.75rem;
+  color: var(--color-neutral-foreground3);
+  font-size: 0.875rem;
+  top: -0.7em;
+}
