@@ -1,0 +1,56 @@
+.container {
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.padded {
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.size-small {
+  max-width: 640px;
+}
+
+.size-medium {
+  max-width: 996px;
+}
+
+.size-large {
+  max-width: 1276px;
+}
+
+.size-full {
+  max-width: 100%;
+}
+
+@media screen and (max-width: 1276px) {
+  .size-large {
+    max-width: 996px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .size-large {
+    max-width: 100%;
+  }
+
+  .size-medium {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .padded {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
