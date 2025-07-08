@@ -1,0 +1,7 @@
+:root {
+	--test: #fff;
+}
+
+.dark {
+	--test: #000;
+}

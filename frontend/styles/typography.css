@@ -1,0 +1,6 @@
+:root {
+  --font-family-sans: system-ui, Arial, sans-serif;
+  --font-family-mono:
+    Menlo, "Bitstream Vera Sans Mono", "Ubuntu Mono", Consolas, "Courier New",
+    Courier, monospace;
+}
