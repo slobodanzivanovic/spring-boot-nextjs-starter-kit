@@ -1,0 +1,81 @@
+.alert {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-family: var(--font-family-sans);
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+  margin-top: 2px;
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.message {
+  line-height: 1.5;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.closeButton:hover {
+  opacity: 1;
+}
+
+.variant-success {
+  background-color: var(--color-status-success-background1);
+  border: 1px solid var(--color-status-success-border1);
+  color: var(--color-status-success-foreground1);
+}
+
+.variant-error {
+  background-color: var(--color-status-danger-background1);
+  border: 1px solid var(--color-status-danger-border1);
+  color: var(--color-status-danger-foreground1);
+}
+
+.variant-warning {
+  background-color: var(--color-status-warning-background1);
+  border: 1px solid var(--color-status-warning-border1);
+  color: var(--color-status-warning-foreground1);
+}
+
+.variant-info {
+  background-color: var(--color-brand-background2);
+  border: 1px solid var(--color-brand-stroke1);
+  color: var(--color-brand-foreground1);
+}
+
+@media (max-width: 768px) {
+  .alert {
+    padding: 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .icon {
+    margin-right: 0.625rem;
+  }
+}
