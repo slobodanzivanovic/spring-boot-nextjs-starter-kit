@@ -1,5 +1,7 @@
 {
-  "HomePage": {
-    "title": "Hello, World!"
+  "Home": {
+    "title": "Starter Kit",
+    "tagLine": "A starter kit for fullstack apps",
+    "description": "A starter kit for fullstack apps"
   }
 }

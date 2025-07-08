@@ -4,7 +4,7 @@ import {useTranslations} from "next-intl";
 import styles from "./page.module.css";
 
 export default function HomeIndex() {
-  const t = useTranslations("HomePage");
+  const t = useTranslations("Home");
 
   const handleGoogleLogin = () => {
     window.location.href =
