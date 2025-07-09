@@ -1,6 +1,6 @@
 "use client";
 
-import {forwardRef, useEffect} from "react";
+import React, {forwardRef, useEffect} from "react";
 import {X} from "lucide-react";
 import styles from "./Modal.module.css";
 

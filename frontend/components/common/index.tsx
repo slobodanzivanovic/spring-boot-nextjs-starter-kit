@@ -6,6 +6,7 @@ import Alert from "./Alert";
 import Avatar from "./Avatar";
 import Badge from "./Badge";
 import FormGroup from "./FormGroup";
+import Input from "./Input";
 import Modal from "./Modal";
 
 export {
@@ -17,5 +18,6 @@ export {
   Avatar,
   Badge,
   FormGroup,
+  Input,
   Modal,
 };

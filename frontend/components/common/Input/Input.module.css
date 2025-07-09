@@ -1,0 +1,120 @@
+.wrapper {
+  margin-bottom: 1.25rem;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-neutral-foreground2);
+  font-family: var(--font-family-sans);
+}
+
+.labelDisabled {
+  color: var(--color-neutral-foreground-disabled);
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--color-neutral-stroke1);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-neutral-foreground1);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  background-color: var(--color-neutral-background2);
+  font-family: var(--font-family-sans);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-brand-stroke1);
+  box-shadow: 0 0 0 3px var(--color-brand-background2);
+}
+
+.input::placeholder {
+  color: var(--color-neutral-foreground3);
+}
+
+.variant-outlined {
+  background-color: transparent;
+}
+
+.variant-filled {
+  background-color: var(--color-neutral-background3);
+  border-color: transparent;
+}
+
+.variant-filled:focus {
+  background-color: var(--color-neutral-background2);
+}
+
+.hasError {
+  border-color: var(--color-status-danger-border2);
+}
+
+.hasError:focus {
+  border-color: var(--color-status-danger-border2);
+  box-shadow: 0 0 0 3px var(--color-status-danger-background1);
+}
+
+.errorMessage {
+  color: var(--color-status-danger-foreground1);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-family: var(--font-family-sans);
+}
+
+.hasIcon {
+  padding-left: 2.5rem;
+}
+
+.icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-neutral-foreground2);
+  display: flex;
+  align-items: center;
+}
+
+.disabled {
+  background-color: var(--color-neutral-background-disabled);
+  border-color: var(--color-neutral-stroke-disabled);
+  color: var(--color-neutral-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.disabled:focus {
+  box-shadow: none;
+  border-color: var(--color-neutral-stroke-disabled);
+}
+
+@media (max-width: 768px) {
+  .input {
+    padding: 0.625rem;
+    font-size: 0.9rem;
+  }
+
+  .label {
+    font-size: 0.8rem;
+  }
+
+  .errorMessage {
+    font-size: 0.7rem;
+  }
+}
