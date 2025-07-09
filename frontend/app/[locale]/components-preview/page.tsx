@@ -10,11 +10,13 @@ import Divider from "@/components/common/Divider";
 import Modal from "@/components/common/Modal";
 import Spinner, {SpinnerColor, SpinnerSize} from "@/components/common/Spinner";
 import {ThemeToggle} from "@/components/ThemeToggle";
+import {useToast} from "@/components/common";
 import {useState} from "react";
 
 import styles from "./ComponentsPreview.module.css";
 
 const alertVariants: AlertVariant[] = ["info", "success", "warning", "error"];
+const toastVariants = ["info", "success", "warning", "error"] as const;
 const avatarSizes: AvatarSize[] = ["small", "medium", "large", "xlarge"];
 const containerSizes = ["small", "medium", "large", "full"] as const;
 
@@ -23,6 +25,7 @@ const spinnerColors: SpinnerColor[] = ["primary", "white", "dark"];
 
 export default function ComponentsPreview() {
   const [alertIndex, setAlertIndex] = useState(0);
+  const [toastIndex, setToastIndex] = useState(0);
   const [avatarIndex, setAvatarIndex] = useState(0);
   const [avatarMode, setAvatarMode] = useState<"image" | "name" | "empty">(
     "image",
@@ -48,13 +51,26 @@ export default function ComponentsPreview() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const {showToast} = useToast();
+
   const currentAlertVariant = alertVariants[alertIndex];
+  const currentToastVariant = toastVariants[toastIndex];
   const currentAvatarSize = avatarSizes[avatarIndex];
   const currentContainerSize = containerSizes[containerSizeIndex];
 
   const handleChangeAlertVariant = () => {
     setAlertIndex(prev => (prev + 1) % alertVariants.length);
     setShowAlert(true);
+  };
+
+  const handleShowToast = () => {
+    showToast(`This is a ${currentToastVariant} toast`, {
+      type: currentToastVariant,
+      title: `Toast: ${currentToastVariant?.toUpperCase()}`,
+      duration: 4000,
+      position: "bottom-right",
+    });
+    setToastIndex(prev => (prev + 1) % toastVariants.length);
   };
 
   const handleCycleAvatarSize = () => {
@@ -123,6 +139,14 @@ export default function ComponentsPreview() {
               </p>
             </Alert>
           )}
+        </div>
+
+        {/* Toast Preview */}
+        <div className={styles.componentContainer}>
+          <h2>Toast Component</h2>
+          <Button size="small" onClick={handleShowToast}>
+            Show {currentToastVariant} toast
+          </Button>
         </div>
 
         {/* Avatar Preview */}

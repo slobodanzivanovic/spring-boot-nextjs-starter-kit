@@ -10,6 +10,7 @@ import {hasLocale, NextIntlClientProvider} from "next-intl";
 import {getMessages, getTranslations} from "next-intl/server";
 import {ThemeProvider} from "next-themes";
 import {notFound} from "next/navigation";
+import {ToastProvider} from "@/components/common";
 
 type MetadataProps = {
   params: Promise<{locale: string}>;
@@ -58,7 +59,12 @@ export default async function RootLayout({
             defaultTheme={siteConfig.defaultNextTheme}
             enableSystem
           >
-            <Container size="large">{children}</Container>
+            <ToastProvider
+              defaultPosition="bottom-right"
+              defaultDuration={5000}
+            >
+              <Container size="large">{children}</Container>
+            </ToastProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
 

@@ -9,6 +9,8 @@ import FormGroup from "./FormGroup";
 import Input from "./Input";
 import Modal from "./Modal";
 import Spinner from "./Spinner";
+import Toast from "./Toast";
+import {ToastProvider, useToast} from "./ToastContainer";
 
 export {
   Container,
@@ -22,4 +24,7 @@ export {
   Input,
   Modal,
   Spinner,
+  Toast,
+  ToastProvider,
+  useToast,
 };
