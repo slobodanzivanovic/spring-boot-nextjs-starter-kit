@@ -4,5 +4,6 @@ import Card from "./Card";
 import Divider from "./Divider";
 import Alert from "./Alert";
 import Avatar from "./Avatar";
+import Badge from "./Badge";
 
-export {Container, Button, Card, Divider, Alert, Avatar};
+export {Container, Button, Card, Divider, Alert, Avatar, Badge};
