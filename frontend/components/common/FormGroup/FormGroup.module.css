@@ -1,0 +1,43 @@
+.formGroup {
+  display: flex;
+  width: 100%;
+}
+
+.layout-vertical {
+  flex-direction: column;
+}
+
+.layout-horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.gap-small {
+  gap: 0.5rem;
+}
+
+.gap-medium {
+  gap: 1rem;
+}
+
+.gap-large {
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .layout-horizontal {
+    flex-direction: column;
+  }
+
+  .gap-small {
+    gap: 0.375rem;
+  }
+
+  .gap-medium {
+    gap: 0.75rem;
+  }
+
+  .gap-large {
+    gap: 1.25rem;
+  }
+}
