@@ -6,5 +6,16 @@ import Alert from "./Alert";
 import Avatar from "./Avatar";
 import Badge from "./Badge";
 import FormGroup from "./FormGroup";
+import Modal from "./Modal";
 
-export {Container, Button, Card, Divider, Alert, Avatar, Badge, FormGroup};
+export {
+  Container,
+  Button,
+  Card,
+  Divider,
+  Alert,
+  Avatar,
+  Badge,
+  FormGroup,
+  Modal,
+};

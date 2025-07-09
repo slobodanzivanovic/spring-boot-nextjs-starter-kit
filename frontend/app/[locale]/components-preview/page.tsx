@@ -1,29 +1,76 @@
 "use client";
 
+import Alert, {AlertVariant} from "@/components/common/Alert";
+import Avatar, {AvatarSize} from "@/components/common/Avatar";
+import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import Container from "@/components/common/Container";
+import Divider from "@/components/common/Divider";
+import Modal from "@/components/common/Modal";
 import {ThemeToggle} from "@/components/ThemeToggle";
 import {useState} from "react";
 
 import styles from "./ComponentsPreview.module.css";
 
+const alertVariants: AlertVariant[] = ["info", "success", "warning", "error"];
+const avatarSizes: AvatarSize[] = ["small", "medium", "large", "xlarge"];
 const containerSizes = ["small", "medium", "large", "full"] as const;
 
 export default function ComponentsPreview() {
+  const [alertIndex, setAlertIndex] = useState(0);
+  const [avatarIndex, setAvatarIndex] = useState(0);
+  const [avatarMode, setAvatarMode] = useState<"image" | "name" | "empty">(
+    "image",
+  );
+  const [showAlert, setShowAlert] = useState(true);
+
   const [showCardTitle, setShowCardTitle] = useState(true);
   const [showCardSubtitle, setShowCardSubtitle] = useState(true);
   const [showCardFooter, setShowCardFooter] = useState(true);
+
+  const [dividerText, setDividerText] = useState("Divider Text");
+  const [dividerOrientation, setDividerOrientation] = useState<
+    "horizontal" | "vertical"
+  >("horizontal");
 
   const [containerSizeIndex, setContainerSizeIndex] = useState(1);
   const [containerCentered, setContainerCentered] = useState(false);
   const [containerPadded, setContainerPadded] = useState(true);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const currentAlertVariant = alertVariants[alertIndex];
+  const currentAvatarSize = avatarSizes[avatarIndex];
   const currentContainerSize = containerSizes[containerSizeIndex];
+
+  const handleChangeAlertVariant = () => {
+    setAlertIndex(prev => (prev + 1) % alertVariants.length);
+    setShowAlert(true);
+  };
+
+  const handleCycleAvatarSize = () => {
+    setAvatarIndex(prev => (prev + 1) % avatarSizes.length);
+  };
+
+  const handleToggleAvatarMode = () => {
+    setAvatarMode(prev =>
+      prev === "image" ? "name" : prev === "name" ? "empty" : "image",
+    );
+  };
+
+  const toggleDividerOrientation = () => {
+    setDividerOrientation(prev =>
+      prev === "horizontal" ? "vertical" : "horizontal",
+    );
+  };
 
   const cycleContainerSize = () => {
     setContainerSizeIndex(prev => (prev + 1) % containerSizes.length);
   };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className={styles.outerContainer}>
@@ -35,6 +82,77 @@ export default function ComponentsPreview() {
           <h2>Theme Toggle Component</h2>
           <div className={styles.controls}>
             <ThemeToggle />
+          </div>
+        </div>
+
+        {/* Alert Preview */}
+        <div className={styles.componentContainer}>
+          <h2>Alert Component</h2>
+          <Button size="small" onClick={handleChangeAlertVariant}>
+            Change variant ({currentAlertVariant})
+          </Button>
+          {showAlert && (
+            <Alert
+              variant={currentAlertVariant}
+              title="Preview Alert"
+              onClose={() => setShowAlert(false)}
+              className={styles.alertContainer}
+            >
+              <p>
+                <strong>{currentAlertVariant?.toUpperCase()}:</strong> Alert
+                message for Preview.
+              </p>
+            </Alert>
+          )}
+        </div>
+
+        {/* Avatar Preview */}
+        <div className={styles.componentContainer}>
+          <h2>Avatar Component</h2>
+          <div className={styles.avatarContainer}>
+            <Avatar
+              size={currentAvatarSize}
+              name={avatarMode === "name" ? "Slobodan Zivanovic" : ""}
+              src={
+                avatarMode === "image"
+                  ? "https://s3.tebi.io/programiraj/user%3A9890cc41-f6b3-46a5-bad3-ccbf088b224b/profile/bddb9fcb-6053-4962-b132-1857e29a0deb.png"
+                  : undefined
+              }
+              onClick={() => alert("Avatar clicked")}
+            />
+            <div className={styles.buttons}>
+              <Button size="small" onClick={handleCycleAvatarSize}>
+                Change size ({currentAvatarSize})
+              </Button>
+              <Button size="small" onClick={handleToggleAvatarMode}>
+                Toggle mode ({avatarMode})
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Badge Preview */}
+        <div className={styles.componentContainer}>
+          <h2>Badge Component</h2>
+          <div className={styles.badgeContainer}>
+            <Badge variant="primary" size="small" rounded>
+              Primary Small
+            </Badge>
+            <Badge variant="secondary" size="medium" rounded>
+              Secondary Medium
+            </Badge>
+            <Badge variant="success" size="large">
+              Success Large
+            </Badge>
+            <Badge variant="error" size="medium" rounded>
+              Error Medium
+            </Badge>
+            <Badge variant="warning" size="small">
+              Warning Small
+            </Badge>
+            <Badge variant="info" size="medium" rounded>
+              Info Medium
+            </Badge>
           </div>
         </div>
 
@@ -107,6 +225,35 @@ export default function ComponentsPreview() {
           </Card>
         </div>
 
+        {/* Divider Preview */}
+        <div className={styles.componentContainer}>
+          <h2>Divider Component</h2>
+          <div className={styles.buttons}>
+            <Button size="small" onClick={toggleDividerOrientation}>
+              Toggle Orientation ({dividerOrientation})
+            </Button>
+            <Button
+              size="small"
+              onClick={() =>
+                setDividerText(prev => (prev ? "" : "Divider Text"))
+              }
+            >
+              Toggle Text ({dividerText ? "On" : "Off"})
+            </Button>
+          </div>
+
+          <div className={styles.dividerContainer}>
+            <span>Content 1</span>
+            <Divider
+              orientation={dividerOrientation}
+              text={dividerText || undefined}
+              className={styles.dividerPreview}
+              textClassName={styles.dividerTextPreview}
+            />
+            <span>Content 2</span>
+          </div>
+        </div>
+
         {/* Container Preview */}
         <div className={styles.componentContainer}>
           <h2>Container Component</h2>
@@ -126,15 +273,37 @@ export default function ComponentsPreview() {
             size={currentContainerSize}
             centered={containerCentered}
             padded={containerPadded}
-            className={styles.containerTest}
+            className={styles.containerPreview}
           >
             <p>
-              This is a preview content inside the Container component with size{" "}
+              This is a Preview content inside the Container component with size{" "}
               <b>{currentContainerSize}</b>, centered:{" "}
               <b>{containerCentered ? "Yes" : "No"}</b>, padded:{" "}
               <b>{containerPadded ? "Yes" : "No"}</b>.
             </p>
           </Container>
+        </div>
+
+        {/* TODO: fix error on first opening */}
+        {/* Modal Preview */}
+        <div className={styles.componentContainer}>
+          <h2>Modal Component</h2>
+          <Button onClick={openModal}>Open Modal</Button>
+
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            title="Preview Modal"
+            footer={
+              <div className={styles.buttons}>
+                <Button onClick={closeModal}>Close</Button>
+                <Button onClick={() => alert("Action!")}>Action</Button>
+              </div>
+            }
+            size="medium"
+          >
+            <p>This is a Preview modal content.</p>
+          </Modal>
         </div>
       </div>
     </div>

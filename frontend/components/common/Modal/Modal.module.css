@@ -1,0 +1,135 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  background-color: var(--color-background-overlay);
+  padding: 1rem;
+  font-family: var(--font-family-sans);
+  animation: fadeIn 0.2s ease;
+}
+
+.content {
+  background-color: var(--color-neutral-background2);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
+}
+
+.header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-neutral-stroke2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-neutral-foreground1);
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-neutral-foreground2);
+  transition: color 0.2s;
+  padding: 0.375rem;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  color: var(--color-neutral-foreground1);
+  background-color: var(--color-neutral-background1-hover);
+}
+
+.body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--color-neutral-stroke2);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.size-small {
+  max-width: 400px;
+}
+
+.size-medium {
+  max-width: 600px;
+}
+
+.size-large {
+  max-width: 900px;
+}
+
+.size-full {
+  max-width: 98vw;
+  height: 90vh;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    max-height: calc(100vh - 1rem);
+    border-radius: 8px;
+  }
+
+  .header {
+    padding: 1.25rem;
+  }
+
+  .body {
+    padding: 1.25rem;
+  }
+
+  .footer {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+  }
+
+  .footer button {
+    width: 100%;
+  }
+}
