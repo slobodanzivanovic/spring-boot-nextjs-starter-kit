@@ -8,6 +8,7 @@ import Card from "@/components/common/Card";
 import Container from "@/components/common/Container";
 import Divider from "@/components/common/Divider";
 import Modal from "@/components/common/Modal";
+import Spinner, {SpinnerColor, SpinnerSize} from "@/components/common/Spinner";
 import {ThemeToggle} from "@/components/ThemeToggle";
 import {useState} from "react";
 
@@ -16,6 +17,9 @@ import styles from "./ComponentsPreview.module.css";
 const alertVariants: AlertVariant[] = ["info", "success", "warning", "error"];
 const avatarSizes: AvatarSize[] = ["small", "medium", "large", "xlarge"];
 const containerSizes = ["small", "medium", "large", "full"] as const;
+
+const spinnerSizes: SpinnerSize[] = ["small", "medium", "large"];
+const spinnerColors: SpinnerColor[] = ["primary", "white", "dark"];
 
 export default function ComponentsPreview() {
   const [alertIndex, setAlertIndex] = useState(0);
@@ -37,6 +41,10 @@ export default function ComponentsPreview() {
   const [containerSizeIndex, setContainerSizeIndex] = useState(1);
   const [containerCentered, setContainerCentered] = useState(false);
   const [containerPadded, setContainerPadded] = useState(true);
+
+  const [spinnerSizeIndex, setSpinnerSizeIndex] = useState(1);
+  const [spinnerColorIndex, setSpinnerColorIndex] = useState(0);
+  const [spinnerFullPage, setSpinnerFullPage] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -71,6 +79,17 @@ export default function ComponentsPreview() {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const currentSpinnerSize = spinnerSizes[spinnerSizeIndex];
+  const currentSpinnerColor = spinnerColors[spinnerColorIndex];
+
+  const cycleSpinnerSize = () =>
+    setSpinnerSizeIndex(prev => (prev + 1) % spinnerSizes.length);
+
+  const cycleSpinnerColor = () =>
+    setSpinnerColorIndex(prev => (prev + 1) % spinnerColors.length);
+
+  const toggleSpinnerFullPage = () => setSpinnerFullPage(prev => !prev);
 
   return (
     <div className={styles.outerContainer}>
@@ -304,6 +323,29 @@ export default function ComponentsPreview() {
           >
             <p>This is a Preview modal content.</p>
           </Modal>
+        </div>
+
+        {/* Spinner Preview */}
+        <div className={styles.componentContainer}>
+          <h2>Spinner Component</h2>
+          <div className={styles.buttons}>
+            <Button size="small" onClick={cycleSpinnerSize}>
+              Change Size ({currentSpinnerSize})
+            </Button>
+            <Button size="small" onClick={cycleSpinnerColor}>
+              Change Color ({currentSpinnerColor})
+            </Button>
+            <Button size="small" onClick={toggleSpinnerFullPage}>
+              Toggle Full Page ({spinnerFullPage ? "On" : "Off"})
+            </Button>
+          </div>
+
+          <Spinner
+            size={currentSpinnerSize}
+            color={currentSpinnerColor}
+            fullPage={spinnerFullPage}
+            label="Loading..."
+          />
         </div>
       </div>
     </div>

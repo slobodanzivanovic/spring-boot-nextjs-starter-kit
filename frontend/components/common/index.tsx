@@ -8,6 +8,7 @@ import Badge from "./Badge";
 import FormGroup from "./FormGroup";
 import Input from "./Input";
 import Modal from "./Modal";
+import Spinner from "./Spinner";
 
 export {
   Container,
@@ -20,4 +21,5 @@ export {
   FormGroup,
   Input,
   Modal,
+  Spinner,
 };
