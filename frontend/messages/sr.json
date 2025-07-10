@@ -9,5 +9,12 @@
     "light": "Svetla",
     "dark": "Tamna",
     "system": "Sistemska"
+  },
+  "CommonLanguage": {
+    "language": "Jezik",
+    "switchLanguage": "Promeni jezik",
+    "english": "Engleski",
+    "serbian": "Srpski",
+    "switching": "Menjam..."
   }
 }

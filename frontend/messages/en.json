@@ -9,5 +9,12 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "CommonLanguage": {
+    "language": "Language",
+    "switchLanguage": "Switch language",
+    "english": "English",
+    "serbian": "Serbian",
+    "switching": "Switching..."
   }
 }

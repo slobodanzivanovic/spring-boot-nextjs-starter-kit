@@ -3,6 +3,7 @@
 import {useTranslations} from "next-intl";
 import styles from "./page.module.css";
 import {ThemeToggle} from "@/components/ThemeToggle";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 export default function HomeIndex() {
   const t = useTranslations("Home");
@@ -21,6 +22,7 @@ export default function HomeIndex() {
     <div className={styles.page}>
       <h1>{t("title")}</h1>
       <ThemeToggle />
+      <LocaleSwitcher />
 
       <div>
         <h2>Login with</h2>
