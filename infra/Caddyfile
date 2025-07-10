@@ -1,0 +1,21 @@
+http://localhost:8080 {
+    route /caddy-test {
+        respond "Caddy config is working!"
+    }
+
+    route /api/* {
+        reverse_proxy backend:8080
+    }
+
+    route /oauth2/authorization/* {
+        reverse_proxy backend:8080
+    }
+
+    route /login/oauth2/code/* {
+        reverse_proxy backend:8080
+    }
+
+    route * {
+        reverse_proxy frontend:3000
+    }
+}
