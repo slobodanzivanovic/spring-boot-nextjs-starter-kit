@@ -1,0 +1,114 @@
+.container {
+  width: 100%;
+  height: 100%;
+  margin: 20px 0;
+}
+
+.mainCard {
+  width: 100%;
+}
+
+.section {
+  margin-top: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-neutral-foreground1);
+  margin-bottom: 1.5rem;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--color-neutral-stroke2);
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background-color: var(--color-neutral-background1);
+}
+
+.table th,
+.table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-neutral-stroke2);
+  color: var(--color-neutral-foreground2);
+  vertical-align: middle;
+}
+
+.table th {
+  background-color: var(--color-neutral-background3);
+  color: var(--color-neutral-foreground1);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-neutral-background1-hover);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.noUsersRow td {
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+  color: var(--color-neutral-foreground3);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userAvatar {
+  flex-shrink: 0;
+}
+
+.usernameCell {
+  min-width: 150px;
+}
+
+.rolesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-neutral-stroke1);
+}
+
+.paginationInfo {
+  color: var(--color-neutral-foreground2);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .pagination {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

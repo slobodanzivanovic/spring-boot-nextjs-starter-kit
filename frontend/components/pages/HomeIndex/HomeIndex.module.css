@@ -1,0 +1,184 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 70px);
+  gap: 2rem;
+  width: 100%;
+}
+
+.link {
+  background: var(--color-neutral-foreground3);
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: var(--color-neutral-background1);
+}
+
+.welcomeSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-neutral-foreground1);
+  margin: 0;
+}
+
+.logo {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--color-neutral-shadow-ambient);
+}
+
+:global(.dark) .logo {
+  filter: invert(1);
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.userSection {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profileImageContainer {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.profileImage {
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.imageLoadingSpinner {
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.userInfo h2 {
+  font-size: 1.5rem;
+  margin: 0 0 0.25rem 0;
+  color: var(--color-neutral-foreground1);
+}
+
+.username {
+  font-size: 1rem;
+  color: var(--color-neutral-foreground2);
+  margin: 0 0 0.5rem 0;
+}
+
+.email {
+  font-size: 0.875rem;
+  color: var(--color-neutral-foreground3);
+  margin: 0 0 1rem 0;
+}
+
+.userRoles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.logoutButton {
+  width: auto !important;
+}
+
+@media (max-width: 768px) {
+  .content {
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .logo {
+    width: 280px;
+    height: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .logo {
+    width: 240px;
+    height: 310px;
+  }
+
+  .userSection {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .profileImageContainer {
+    margin-bottom: 1rem;
+  }
+
+  .userInfo {
+    align-items: center;
+    text-align: center;
+  }
+
+  .userRoles {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .userSection {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    padding: 2.5rem;
+  }
+
+  .profileImageContainer {
+    margin-bottom: 0;
+    margin-right: 2rem;
+  }
+
+  .userInfo {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .userRoles {
+    justify-content: flex-start;
+  }
+}

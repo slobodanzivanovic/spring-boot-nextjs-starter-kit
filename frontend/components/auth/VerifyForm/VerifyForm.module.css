@@ -1,0 +1,105 @@
+.container {
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.welcomeMessage {
+  margin-bottom: 1.5rem;
+}
+
+.formWrapper {
+  width: 100%;
+}
+
+.successAlert {
+  margin-bottom: 1rem;
+}
+
+.submitButton {
+  margin-bottom: 1rem;
+}
+
+.resendWrapper {
+  margin-top: 1.5rem;
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-neutral-stroke3);
+}
+
+.resendText {
+  font-size: 0.875rem;
+  color: var(--color-neutral-foreground2);
+  margin-bottom: 0.5rem;
+}
+
+.resendButton {
+  width: auto !important;
+  margin: 0 auto !important;
+}
+
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.link {
+  color: var(--color-brand-foreground-link);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.successMessage {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.successIcon {
+  margin: 0 auto 1.5rem;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-status-success-background1);
+  color: var(--color-status-success-foreground1);
+}
+
+.successMessage h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-neutral-foreground1);
+}
+
+.successMessage p {
+  margin-bottom: 2rem;
+  color: var(--color-neutral-foreground2);
+  line-height: 1.6;
+}
+
+.linkButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-brand-background);
+  color: var(--color-neutral-foreground-on-brand);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.linkButton:hover {
+  background-color: var(--color-brand-background-hover);
+}
+
+@media (max-width: 500px) {
+  .container {
+    max-width: 100%;
+  }
+}

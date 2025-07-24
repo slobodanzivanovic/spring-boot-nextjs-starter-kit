@@ -11,6 +11,7 @@ import {getMessages, getTranslations} from "next-intl/server";
 import {ThemeProvider} from "next-themes";
 import {notFound} from "next/navigation";
 import {ToastProvider} from "@/components/common";
+import {AuthProvider} from "@/lib/auth/AuthContext";
 
 type MetadataProps = {
   params: Promise<{locale: string}>;
@@ -59,12 +60,14 @@ export default async function RootLayout({
             defaultTheme={siteConfig.defaultNextTheme}
             enableSystem
           >
-            <ToastProvider
-              defaultPosition="bottom-right"
-              defaultDuration={5000}
-            >
-              <Container size="large">{children}</Container>
-            </ToastProvider>
+            <AuthProvider>
+              <ToastProvider
+                defaultPosition="bottom-right"
+                defaultDuration={5000}
+              >
+                <Container size="large">{children}</Container>
+              </ToastProvider>
+            </AuthProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
 
